@@ -12,9 +12,9 @@ The goal was to work along with a team, learn the basics of Object-Oriented Prog
 
 You need at least ruby 4.5.1 (maybe under but not tested) and bundler installed on your computer.
 
-To run this program you also gonna need a Gmaiil account to sent emails and you need to create your own Twitter API keys. You can get them by signing up on [Spotify for Developers website](https://developer.spotify.com/dashboard/)
+To run this program you also gonna need a Gmaiil account to sent emails and you need to create your own Twitter API keys.
 
-You can get them by signing up on [Twitter for Developers website](https://developer.twitter.com/)
+You can get them by signing up on [Twitter for Developers website](https://developer.twitter.com/).
 
 1. First of all `git clone the repo`
 2. Run `$ cd ultimate_townhall`
