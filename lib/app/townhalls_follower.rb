@@ -36,5 +36,3 @@ end
     end
   end
 end
-
-TownhallsFollowers.new
