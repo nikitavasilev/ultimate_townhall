@@ -39,6 +39,7 @@ TWITTER_ACCESS_SECRET_TOKEN = "replace_it_with_your_token_secret"
 ## Contributions
 
 This project was build with the help of:
+* [Nikita Vasilev](https://github.com/nikitavasilev)
 * [Arthur Mansuy](https://github.com/tutus06)
 * [Nathaniel Debache](https://github.com/Natdenice)
 * [Thomas Charvet](https://github.com/TomacTh)
