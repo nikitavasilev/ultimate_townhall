@@ -2,9 +2,9 @@ require 'twitter'
 require 'dotenv'
 require 'pry'
 
-class TownhallsFollowers
+class TownhallsFollower
 
-Dotenv.load '../../.env'
+Dotenv.load '.env'
 
   def initialize #On définit nos API
     @client = Twitter::REST::Client.new do |config|
@@ -18,7 +18,7 @@ Dotenv.load '../../.env'
 
   def search_handle
     @user_id=[]
-    file = File.read('../../db/emails.json')
+    file = File.read('./db/townhalls.JSON')
     @mix = JSON.parse(file)
     @mix.keys.each do |k| #Pour chaque ville on scrapp les id user qui correspondent à mairie 'ville'
       unless @client.user_search("mairie #{k}").first.nil? == true
