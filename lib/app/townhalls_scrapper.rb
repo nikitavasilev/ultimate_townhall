@@ -1,6 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
 require 'rest-client'
+require 'json'
 
 #Les trois départements choisis : Alpes-Maritimes, Territoire de Belfort, Var
 
@@ -18,27 +19,9 @@ class TownhallsScrapper
     email = page.xpath("/html/body/div/main/section[2]/div/table/tbody/tr[4]/td[2]")
     departement = page.xpath("/html/body/div/main/section[4]/div/table/tbody/tr[1]/td[2]")
 
-    array_name=[]
-    name.each do |i|
-    name1= i.text
-    array_name << name1
-    end
-
-    array_mail=[]
-    email.each do |i|
-    email1 = i.text
-    array_mail << email1
-    end
-
-    array_dpt=[]
-    departement.each do |i|
-    dpt= i.text
-    array_dpt << dpt
-    end
-
-    hash = Hash[array_name.zip(array_mail)]
-    hashi = Hash[array_dpt.zip(hash)]
-    p hashi
+    return name.text
+    return email.text
+    return departement.text
 
   rescue OpenURI::HTTPError => e
     if e.message == '404 Not Found'
@@ -51,45 +34,54 @@ class TownhallsScrapper
   def get_url_am(regionurl)
     link = Nokogiri::HTML(open(regionurl))
     i = 1 ; j = 1
+    hashi = Hash.new
       while i < 5
         while (j < 42 && i < 6) || j < 41
           doc = link.xpath("/html/body/table/tr[3]/td/table/tr/td[1]/table[2]/tr[2]/td/table/tr/td[#{i}]/p/a[#{j}]/@href")
-          doc.each {|doc| get_email(doc.text.sub('.', 'http://annuaire-des-mairies.com'))}
+          hashi['1'] = doc.each {|doc| get_email(doc.text.sub('.', 'http://annuaire-des-mairies.com'))}
           j += 1
           end
         j = 1
         i += 1
         end
+        return hashi
   end
 
   def get_url_belfort(regionurl)
     link = Nokogiri::HTML(open(regionurl))
     i = 1 ; j = 1
+    hasho = Hash.new
       while i < 4
         while (j < 35 && i < 5) || j < 34
           doc = link.xpath("/html/body/table/tr[3]/td/table/tr/td[1]/table[2]/tr[3]/td/table/tr/td[#{i}]/p/a[#{j}]/@href")
-          doc.each {|doc| get_email(doc.text.sub('.', 'http://annuaire-des-mairies.com'))}
+          hasho['2'] = doc.each {|doc| get_email(doc.text.sub('.', 'http://annuaire-des-mairies.com'))}
           j += 1
           end
           j = 1
           i += 1
         end
+        return hasho
   end
 
   def get_url_var(regionurl)
     link = Nokogiri::HTML(open(regionurl))
     i = 1 ; j = 1
+    hash = Hash.new
       while i < 4
         while (j < 52 && i < 5) || j < 51
           doc = link.xpath("/html/body/table/tr[3]/td/table/tr/td[1]/table[2]/tr[3]/td/table/tr/td[#{i}]/p/a[#{j}]/@href")
-          doc.each {|doc| get_email(doc.text.sub('.', 'http://annuaire-des-mairies.com'))}
+          hash['3'] = doc.each{|doc| get_email(doc.text.sub('.', 'http://annuaire-des-mairies.com'))}
           j += 1
           end
           j = 1
           i += 1
         end
+        return hash
   end
 
 end
 
-TownhallsScrapper.new.perform
+a = TownhallsScrapper.new.perform
+File.open("./../../db/emails.json", "w") do |f|
+  f.write(a.to_json)
+end
