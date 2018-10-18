@@ -6,82 +6,66 @@ require 'json'
 #Les trois départements choisis : Alpes-Maritimes, Territoire de Belfort, Var
 
 class TownhallsScrapper
+  #creer cette partie pour les instances de classe
+  include Enumerable
+  attr_accessor :names, :email, :departement
 
-  def perform
-    get_url_am("http://annuaire-des-mairies.com/alpes-maritimes.html")
-    get_url_belfort('http://annuaire-des-mairies.com/territoire-de-belfort.html')
-    get_url_var('http://annuaire-des-mairies.com/var.html')
+  def initialize
+    @departement = [] #on appelle nos arrays ici
+    @names = []
+    @email = []
   end
 
-  def get_email(townurl)
-    page = Nokogiri::HTML(open(townurl))
-    name = page.xpath('/html/body/div/main/section[1]/div/div/div/h1')
-    email = page.xpath("/html/body/div/main/section[2]/div/table/tbody/tr[4]/td[2]")
-    departement = page.xpath("/html/body/div/main/section[4]/div/table/tbody/tr[1]/td[2]")
+  def get_email(href)
+    page = Nokogiri::HTML(open("http://annuaire-des-mairies.com/#{href}"))
+    @departement << page.css('tr.txt-primary.tr-last td')[27].text #on intègre nos liens dans les arrays
+    @names << page.css('h1')[1].text
+    @email << page.css('tr.txt-primary.tr-last td')[7].text
 
-    return name.text
-    return email.text
-    return departement.text
-
-  rescue OpenURI::HTTPError => e
-    if e.message == '404 Not Found'
-    else
-      raise e
-    end
-
+    rescue OpenURI::HTTPError => e
+      if e.message == '404 Not Found'
+      else
+        raise e
+      end
   end
 
-  def get_url_am(regionurl)
-    link = Nokogiri::HTML(open(regionurl))
-    i = 1 ; j = 1
-    hashi = Hash.new
-      while i < 5
-        while (j < 42 && i < 6) || j < 41
-          doc = link.xpath("/html/body/table/tr[3]/td/table/tr/td[1]/table[2]/tr[2]/td/table/tr/td[#{i}]/p/a[#{j}]/@href")
-          hashi['1'] = doc.each {|doc| get_email(doc.text.sub('.', 'http://annuaire-des-mairies.com'))}
-          j += 1
-          end
-        j = 1
-        i += 1
-        end
-        return hashi
+  def get_url_am
+    page = Nokogiri::HTML(open("http://annuaire-des-mairies.com/alpes-maritimes.html"))
+    link = page.css("a.lientxt")
+    link.each {|link| get_email(link['href'].delete_prefix('.'))}
   end
 
-  def get_url_belfort(regionurl)
-    link = Nokogiri::HTML(open(regionurl))
-    i = 1 ; j = 1
-    hasho = Hash.new
-      while i < 4
-        while (j < 35 && i < 5) || j < 34
-          doc = link.xpath("/html/body/table/tr[3]/td/table/tr/td[1]/table[2]/tr[3]/td/table/tr/td[#{i}]/p/a[#{j}]/@href")
-          hasho['2'] = doc.each {|doc| get_email(doc.text.sub('.', 'http://annuaire-des-mairies.com'))}
-          j += 1
-          end
-          j = 1
-          i += 1
-        end
-        return hasho
+  def get_url_belfort
+    page = Nokogiri::HTML(open("http://annuaire-des-mairies.com/territoire-de-belfort.html"))
+    link = page.css("a.lientxt")
+    link.each {|link| get_email(link['href'].delete_prefix('.'))}
   end
 
-  def get_url_var(regionurl)
-    link = Nokogiri::HTML(open(regionurl))
-    i = 1 ; j = 1
-    hash = Hash.new
-      while i < 4
-        while (j < 52 && i < 5) || j < 51
-          doc = link.xpath("/html/body/table/tr[3]/td/table/tr/td[1]/table[2]/tr[3]/td/table/tr/td[#{i}]/p/a[#{j}]/@href")
-          hash['3'] = doc.each{|doc| get_email(doc.text.sub('.', 'http://annuaire-des-mairies.com'))}
-          j += 1
-          end
-          j = 1
-          i += 1
-        end
-        return hash
+  def get_url_var
+    page = Nokogiri::HTML(open("http://annuaire-des-mairies.com/var.html"))
+    link = page.css("a.lientxt")
+    link.each {|link| get_email(link['href'].delete_prefix('.'))}
   end
 
 end
 
-a = TownhallsScrapper.new.perform
-File.open("./../../db/emails.json", "w") do |f|
-  f.write(a.to_json)
+scrap = TownhallsScrapper.new
+puts "on lance get all url qui lance get all name et va recup les urls des communes"
+scrap
+
+#On scrappe depuis les méthodes
+scrap.get_url_am
+scrap.get_url_belfort
+scrap.get_url_var
+
+puts scrap.departement
+puts scrap.names
+puts scrap.email
+
+#on zip les arrays
+@mix = Hash[scrap.names.zip(scrap.email)]
+
+#on insère dans le json
+File.open('./../../db/emails.json', 'w') do |f|
+  f.write(@mix.to_json )
 end
