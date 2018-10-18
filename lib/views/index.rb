@@ -1,8 +1,9 @@
 require './lib/app/townhalls_scrapper.rb'
-require './lib/app/townhalls_mailers.rb'
+require './lib/app/townhalls_mailer.rb'
 require './lib/app/townhalls_adder_to_db.rb'
 require './lib/app/townhalls_follower'
 require './lib/views/done.rb'
+require './lib/app/convert_to_csv.rb'
 
 class Index
   def initialize
@@ -28,14 +29,15 @@ class Index
       TownhallsScrapper.new
       Done.new.townhalls_scrapper_done
     when 2
-      if csv == ""
+      if json == ""
         puts "\n The CSV file is empty. You need to choose option 1 before,".red
         puts " to scrapp the data first.\n\n\n".red
       else
-          puts "\n There is your data:\n\n".red
-          puts csv
-          Done.new.read_csv_done
-          puts "\n\n"
+        Convert.new
+        puts "\n There is your data:\n\n".red
+        puts csv
+        Done.new.read_csv_done
+        puts "\n\n"
       end
     when 3
       if json == ""
@@ -44,11 +46,11 @@ class Index
       else
           puts "\n There is your data:\n\n"
           puts json
-          Done.new.read_csv_done
+          Done.new.read_json_done
           puts "\n\n"
       end
     when 4
-      if csv == "" || json == ""
+      if json == ""
         puts "\n You need to scrapp all the data before beeing able to send emails.".red
         puts "  Please choose option 1 before to scrapp the data first.\n\n\n".red
       else

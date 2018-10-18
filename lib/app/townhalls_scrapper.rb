@@ -14,6 +14,7 @@ class TownhallsScrapper
     @departement = [] #on appelle nos arrays ici
     @names = []
     @email = []
+    perform
   end
 
   def get_email(href)
@@ -46,26 +47,21 @@ class TownhallsScrapper
     link = page.css("a.lientxt")
     link.each {|link| get_email(link['href'].delete_prefix('.'))}
   end
+  def perform
+    #On scrappe depuis les méthodes
+    get_url_am
+    get_url_belfort
+    get_url_var
+
+    #on zip les arrays
+    @mix = Hash[names.zip(email)]
+
+    #on insère dans le json
+    File.open('./db/townhalls.JSON', 'w') do |f|
+      f.write(@mix.to_json )
+end
+  end
 
 end
 
-scrap = TownhallsScrapper.new
-puts "on lance get all url qui lance get all name et va recup les urls des communes"
-scrap
 
-#On scrappe depuis les méthodes
-scrap.get_url_am
-scrap.get_url_belfort
-scrap.get_url_var
-
-puts scrap.departement
-puts scrap.names
-puts scrap.email
-
-#on zip les arrays
-@mix = Hash[scrap.names.zip(scrap.email)]
-
-#on insère dans le json
-File.open('./../../db/emails.json', 'w') do |f|
-  f.write(@mix.to_json )
-end
