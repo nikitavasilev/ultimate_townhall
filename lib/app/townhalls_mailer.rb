@@ -18,7 +18,7 @@ class TownhallsMailer         # on crée une classe incluant toutes les méthode
 		               # automatiquement 2 méthodes, la premiere permettant de se connecter au compte gmail et 
 		               # la seconde permettant d'envoyer en masse des mails
 
-		database = File.read"./db/emails.json"  # cette ligne de code permet d'accéder au contenu du fichier.JSON que l'on
+		database = File.read"./db/townhalls.JSON"  # cette ligne de code permet d'accéder au contenu du fichier.JSON que l'on
 		data_hash = JSON.parse(database)   # veut réutiliser / la variable data_hash lui permet de rentrer le contenu 
 		@city = city                       # de nos data dans une variable qui pourra nous servir par la suite dans notre programme
 		@gmail = gmail
