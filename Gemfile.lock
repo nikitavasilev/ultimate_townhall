@@ -1,6 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
+<<<<<<< HEAD
+=======
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     buftok (0.2.0)
@@ -15,11 +17,19 @@ GEM
     equalizer (0.0.11)
     faraday (0.15.3)
       multipart-post (>= 1.2, < 3)
+>>>>>>> master
     gmail (0.7.1)
       gmail_xoauth (>= 0.3.0)
       mail (>= 2.2.1)
     gmail_xoauth (0.4.2)
       oauth (>= 0.3.6)
+<<<<<<< HEAD
+    json (2.1.0)
+    mail (2.7.1)
+      mini_mime (>= 0.1.1)
+    mini_mime (1.0.1)
+    oauth (0.5.4)
+=======
     google-api-client (0.21.2)
       addressable (~> 2.5, >= 2.5.1)
       googleauth (>= 0.5, < 0.7.0)
@@ -104,11 +114,16 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.5)
+>>>>>>> master
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+<<<<<<< HEAD
+  gmail
+  json
+=======
   colorize
   csv
   dotenv
@@ -119,9 +134,14 @@ DEPENDENCIES
   pry
   rest-client
   twitter
+>>>>>>> master
 
 RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
+<<<<<<< HEAD
+   1.16.2
+=======
    1.16.6
+>>>>>>> master
